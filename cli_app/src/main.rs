@@ -1,11 +1,8 @@
 use clap::Parser;
 use std::{
-    error::Error,
-    fmt::Error,
     fs::File,
     io::{BufReader, Read},
     path::PathBuf,
-    process::exit,
 };
 
 /// Search a file for a given pattern & display line.
