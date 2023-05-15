@@ -1,5 +1,6 @@
 [workspace]
 
 members = [
-    "cli_app"
+    "cli_app",
+    "progress_bar"
 ]
