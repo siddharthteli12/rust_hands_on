@@ -1,10 +1,10 @@
 use clap::Parser;
+use log::{info, warn};
 use std::{
     fs::File,
     io::{BufReader, Read},
     path::PathBuf,
 };
-
 /// Search a file for a given pattern & display line.
 #[derive(Parser, Debug)]
 struct Cli {
@@ -18,9 +18,11 @@ struct Cli {
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Read cli args.
+    env_logger::init();
+    warn!("Make sure file exists");
     let args = Cli::parse();
-
     // Read file.
+    info!("Reading file");
     let file = File::open(&args.path)?;
     let mut reader = BufReader::new(file);
     // Store file content.
