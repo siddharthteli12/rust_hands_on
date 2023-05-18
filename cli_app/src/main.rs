@@ -2,7 +2,7 @@ use clap::Parser;
 use log::{info, warn};
 use std::{
     fs::File,
-    io::{BufReader, Read},
+    io::{BufRead, BufReader},
     path::PathBuf,
 };
 /// Search a file for a given pattern & display line.
@@ -24,14 +24,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Read file.
     info!("Reading file");
     let file = File::open(&args.path)?;
-    let mut reader = BufReader::new(file);
-    // Store file content.
-    let mut contents = String::new();
-    let _ = reader.read_to_string(&mut contents)?;
+    let reader = BufReader::new(file);
 
-    // Print line num & line.
-    for (num, line) in contents.lines().enumerate() {
-        println!("{:}, {:}", num, line);
+    for (counter, line) in reader.lines().enumerate() {
+        let line = line?;
+        if line.contains(&args.pattern) {
+            println!("{:}, {:}", counter, line);
+        }
     }
     Ok(())
 }
