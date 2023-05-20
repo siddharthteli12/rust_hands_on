@@ -16,7 +16,7 @@ struct Cli {
     path: PathBuf,
 }
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
+fn main() -> Result<(), std::io::Error> {
     // Read cli args.
     env_logger::init();
     warn!("Make sure file exists");
@@ -26,10 +26,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let file = File::open(&args.path)?;
     let reader = BufReader::new(file);
 
-    for (counter, line) in reader.lines().enumerate() {
+    match_pattern(&args.pattern, reader, std::io::stdout())
+}
+
+fn match_pattern(
+    pattern: &str,
+    content: impl BufRead,
+    mut output: impl std::io::Write,
+) -> Result<(), std::io::Error> {
+    for (counter, line) in content.lines().enumerate() {
         let line = line?;
-        if line.contains(&args.pattern) {
-            println!("{:}, {:}", counter, line);
+        if line.contains(&pattern) {
+            writeln!(output, "{:}, {:}", counter, line)?
         }
     }
     Ok(())
