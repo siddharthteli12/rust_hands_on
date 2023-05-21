@@ -1,11 +1,7 @@
 use clap::Parser;
 use log::{info, warn};
-use std::{
-    fs::File,
-    io::{BufRead, BufReader},
-    path::PathBuf,
-};
-/// Search a file for a given pattern & display line.
+use std::{fs, path::PathBuf};
+/// Search a file for a given pattern, & display line.
 #[derive(Parser, Debug)]
 struct Cli {
     /// Pattern to be searched in the file.
@@ -23,22 +19,47 @@ fn main() -> Result<(), std::io::Error> {
     let args = Cli::parse();
     // Read file.
     info!("Reading file");
-    let file = File::open(&args.path)?;
-    let reader = BufReader::new(file);
-
-    match_pattern(&args.pattern, reader, std::io::stdout())
+    let content = fs::read_to_string(args.path)?;
+    match_pattern(&args.pattern, &content, &mut std::io::stdout())
 }
 
 fn match_pattern(
     pattern: &str,
-    content: impl BufRead,
+    content: &str,
     mut output: impl std::io::Write,
 ) -> Result<(), std::io::Error> {
     for (counter, line) in content.lines().enumerate() {
-        let line = line?;
         if line.contains(&pattern) {
-            writeln!(output, "{:}, {:}", counter, line)?
+            writeln!(&mut output, "{:},{:}", counter, line)?
         }
     }
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::{fs::File, io::Write};
+
+    #[test]
+    fn test_with_non_existent_pattern() {
+        let content = "Abc\n Aaa\n amc\n";
+        let pattern = "azdzds";
+        let writer_path = "output.txt";
+        let mut output = File::create(writer_path).unwrap();
+        assert!(match_pattern(pattern, content, &mut output).is_ok());
+        let _ = output.flush();
+        assert_eq!(fs::read_to_string(writer_path).unwrap(), "");
+    }
+
+    #[test]
+    fn test_with_existent_pattern() {
+        let content = "Abc\n Aaa\n amc\n";
+        let pattern = "a";
+        let writer_path = "output.txt";
+        let mut output = File::create(writer_path).unwrap();
+        assert!(match_pattern(pattern, content, &mut output).is_ok());
+        let _ = output.flush();
+        assert_eq!(fs::read_to_string(writer_path).unwrap(), "1, Aaa\n2, amc\n");
+    }
 }
