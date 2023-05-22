@@ -31,3 +31,17 @@ fn find_pattern_in_file() -> Result<(), Box<dyn std::error::Error>> {
 
     Ok(())
 }
+
+#[test]
+fn find_with_empty_pattern_in_file() -> Result<(), Box<dyn std::error::Error>> {
+    let file = assert_fs::NamedTempFile::new("find_pattern")?;
+    file.write_str("My name is\ndadas\nname")?;
+    // Calling binary with pattern & file path.
+    let mut cmd = Command::cargo_bin("cli_app")?;
+    cmd.arg("--pattern").arg("").arg("--path").arg(file.path());
+    cmd.assert()
+        .success()
+        .stdout(predicate::str::contains("0,My name is\n1,dadas\n2,name"));
+
+    Ok(())
+}
