@@ -1,4 +1,5 @@
 use clap::Parser;
+use cli_app;
 use log::{info, warn};
 use std::{fs, path::PathBuf};
 /// Search a file for a given pattern, & display line.
@@ -20,20 +21,7 @@ fn main() -> Result<(), std::io::Error> {
     // Read file.
     info!("Reading file");
     let content = fs::read_to_string(args.path)?;
-    match_pattern(&args.pattern, &content, &mut std::io::stdout())
-}
-
-fn match_pattern(
-    pattern: &str,
-    content: &str,
-    mut output: impl std::io::Write,
-) -> Result<(), std::io::Error> {
-    for (counter, line) in content.lines().enumerate() {
-        if line.contains(&pattern) {
-            writeln!(&mut output, "{:},{:}", counter, line)?
-        }
-    }
-    Ok(())
+    cli_app::match_pattern(&args.pattern, &content, &mut std::io::stdout())
 }
 
 #[cfg(test)]
@@ -47,7 +35,7 @@ mod tests {
         let pattern = "azdzds";
         let writer_path = "output.txt";
         let mut output = File::create(writer_path).unwrap();
-        assert!(match_pattern(pattern, content, &mut output).is_ok());
+        assert!(cli_app::match_pattern(pattern, content, &mut output).is_ok());
         let _ = output.flush();
         assert_eq!(fs::read_to_string(writer_path).unwrap(), "");
     }
@@ -58,7 +46,7 @@ mod tests {
         let pattern = "a";
         let writer_path = "output.txt";
         let mut output = File::create(writer_path).unwrap();
-        assert!(match_pattern(pattern, content, &mut output).is_ok());
+        assert!(cli_app::match_pattern(pattern, content, &mut output).is_ok());
         let _ = output.flush();
         assert_eq!(fs::read_to_string(writer_path).unwrap(), "1, Aaa\n2, amc\n");
     }
