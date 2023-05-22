@@ -1,1 +1,4 @@
-Sample cli app for learning
+Simple grep impl in rust for learning. 
+
+- Install
+    - cargo install cli_app
