@@ -25,28 +25,22 @@ fn main() -> Result<(), std::io::Error> {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use std::{fs::File, io::Write};
-
     #[test]
-    fn test_with_non_existent_pattern() {
+    fn test_with_non_existent_pattern() -> Result<(), Box<dyn std::error::Error>> {
         let content = "Abc\n Aaa\n amc\n";
         let pattern = "azdzds";
-        let writer_path = "output.txt";
-        let mut output = File::create(writer_path).unwrap();
-        assert!(cli_app::match_pattern(pattern, content, &mut output).is_ok());
-        let _ = output.flush();
-        assert_eq!(fs::read_to_string(writer_path).unwrap(), "");
+        let mut test_vec = Vec::new();
+        assert!(cli_app::match_pattern(pattern, content, &mut test_vec).is_ok());
+        assert!(test_vec.is_empty());
+        Ok(())
     }
 
     #[test]
     fn test_with_existent_pattern() {
         let content = "Abc\n Aaa\n amc\n";
         let pattern = "a";
-        let writer_path = "output.txt";
-        let mut output = File::create(writer_path).unwrap();
-        assert!(cli_app::match_pattern(pattern, content, &mut output).is_ok());
-        let _ = output.flush();
-        assert_eq!(fs::read_to_string(writer_path).unwrap(), "1, Aaa\n2, amc\n");
+        let mut test_vec = Vec::new();
+        assert!(cli_app::match_pattern(pattern, content, &mut test_vec).is_ok());
+        assert_eq!(test_vec, b"1, Aaa\n2, amc\n");
     }
 }
