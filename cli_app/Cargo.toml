@@ -2,8 +2,14 @@
 name = "cli_app"
 version = "0.1.0"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+authors = ["Siddharth Teli <telisiddharth123@gmail.com>"]
+license = "MIT OR Apache-2.0"
+description = "A tool to search files"
+readme = "README.md"
+homepage = "https://github.com/siddharthteli12/rust_hands_on/tree/main/cli_app"
+repository = "https://github.com/siddharthteli12/rust_hands_on/tree/main/cli_app"
+keywords = ["cli", "search", "demo"]
+categories = ["command-line-utilities"]
 
 [dependencies]
 clap = { version = "4.0", features = ["derive"] }
