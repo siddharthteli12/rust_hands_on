@@ -1,5 +1,4 @@
 use clap::Parser;
-use cli_app;
 use log::{info, warn};
 use std::{fs, path::PathBuf};
 /// Search a file for a given pattern, & display line.
