@@ -2,5 +2,6 @@
 
 members = [
     "cli_app",
-    "progress_bar"
+    "progress_bar",
+    "drop_trait",
 ]
