@@ -42,9 +42,11 @@ impl CustomIterator for IterWrapper {
     type Item = Human;
     fn next(&mut self) -> Option<Self::Item> {
         let current = self.index;
-        self.index = current + 1;
         match self.human.get(current) {
-            Some(val) => Some(val.clone()),
+            Some(val) => {
+                self.index = current + 1;
+                Some(val.clone())
+            }
             None => None,
         }
     }
