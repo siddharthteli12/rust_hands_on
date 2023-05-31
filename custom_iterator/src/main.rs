@@ -92,4 +92,21 @@ mod tests {
         assert_eq!(test_sample_iterator.next().unwrap(), test_human_list[1]);
         assert!(test_sample_iterator.next().is_none());
     }
+
+    #[test]
+    fn test_with_append_iter() {
+        let test_human_list = vec![
+            Human::new(100, "test".to_string(), 1000),
+            Human::new(200, "test2".to_string(), 2000),
+        ];
+        let mut test_sample_iterator = IterWrapper::new(test_human_list.clone());
+        assert_eq!(test_sample_iterator.next().unwrap(), test_human_list[0]);
+        assert_eq!(test_sample_iterator.next().unwrap(), test_human_list[1]);
+        assert!(test_sample_iterator.next().is_none());
+        test_sample_iterator.append(3000, "test3".to_string(), 3000);
+        assert_eq!(
+            test_sample_iterator.next().unwrap(),
+            Human::new(300, "test3".to_string(), 3000)
+        );
+    }
 }
