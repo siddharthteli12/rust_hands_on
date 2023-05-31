@@ -4,4 +4,5 @@ members = [
     "cli_app",
     "progress_bar",
     "drop_trait",
+    "custom_iterator",
 ]
