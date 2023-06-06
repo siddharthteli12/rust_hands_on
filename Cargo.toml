@@ -5,4 +5,5 @@ members = [
     "progress_bar",
     "drop_trait",
     "custom_iterator",
+    "tcp_server_client",
 ]
