@@ -1,5 +1,10 @@
-use clap::{Parser, Subcommand};
+use std::error::Error;
 
+use clap::{Parser, Subcommand};
+mod client;
+mod server;
+use client::handle_client;
+use server::handle_server;
 #[derive(Parser, Debug)]
 struct Args {
     #[command(subcommand)]
@@ -12,7 +17,16 @@ enum RunType {
     CLIENT { url: String },
 }
 
-fn main() {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = Args::parse();
-    println!("struct value - {:?}", args);
+    match args.run_type {
+        RunType::SERVER { port } => {
+            handle_server()?;
+            Ok(())
+        }
+        RunType::CLIENT { url } => {
+            handle_client()?;
+            Ok(())
+        }
+    }
 }
