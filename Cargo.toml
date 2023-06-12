@@ -7,4 +7,5 @@ members = [
     "custom_iterator",
     "tcp_server_client",
     "rustcat",
+    "libp2p",
 ]
