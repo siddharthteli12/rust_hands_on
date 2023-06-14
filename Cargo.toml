@@ -1,7 +1,7 @@
 [workspace]
 
 members = [
-    "cli_app",
+    "cli_projects/cli_app",
     "progress_bar",
     "drop_trait",
     "custom_iterator",
