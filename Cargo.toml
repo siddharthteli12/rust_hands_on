@@ -8,4 +8,5 @@ members = [
     "tcp_server_client",
     "rustcat",
     "libp2p",
+    "cli_projects/recho",
 ]
