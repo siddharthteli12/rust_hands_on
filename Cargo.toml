@@ -10,4 +10,5 @@ members = [
     "libp2p",
     "cli_projects/recho",
     "cli_projects/rls",
+    "cli_projects/todo",
 ]
