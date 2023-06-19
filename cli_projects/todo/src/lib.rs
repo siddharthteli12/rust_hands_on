@@ -1,4 +1,6 @@
-pub fn add_task() {}
+use std::fs;
+
+pub fn add_task(task: String) {}
 
 pub fn delete_task() {}
 

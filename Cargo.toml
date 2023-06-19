@@ -11,4 +11,5 @@ members = [
     "cli_projects/recho",
     "cli_projects/rls",
     "cli_projects/todo",
+    "macros",
 ]

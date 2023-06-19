@@ -5,7 +5,7 @@ fn main() {
 
     match args[1].to_ascii_lowercase().as_str() {
         "add" => {
-            add_task();
+            add_task(args[2..].join(" "));
         }
         "delete" => {
             delete_task();
