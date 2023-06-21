@@ -1,5 +1,6 @@
 unsafe fn modify_pointer(pointer: *mut i32) -> i32 {
     *pointer = 10 as i32;
+    println!("Pointer value {:?}", pointer);
     *pointer
 }
 
