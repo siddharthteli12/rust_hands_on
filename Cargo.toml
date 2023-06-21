@@ -12,4 +12,5 @@ members = [
     "cli_projects/rls",
     "cli_projects/todo",
     "macros",
+    "random1",
 ]
