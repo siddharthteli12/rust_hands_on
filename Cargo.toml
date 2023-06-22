@@ -13,4 +13,5 @@ members = [
     "cli_projects/todo",
     "macros",
     "random1",
+    "custom_vec",
 ]
