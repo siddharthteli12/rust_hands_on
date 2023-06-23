@@ -1,7 +1,6 @@
 use std::env;
 use todo::*;
 
-
 const MESSAGE: &str = "Incorrect subcommand only accepect-\nadd\ndelete\ncomplete\nedit\nlist";
 
 fn main() {
@@ -23,6 +22,8 @@ fn main() {
         "list" => {
             list_task();
         }
-        _ => {println!("{MESSAGE}")}
+        _ => {
+            println!("{MESSAGE}")
+        }
     }
 }
