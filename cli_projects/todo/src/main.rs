@@ -1,5 +1,9 @@
 use std::env;
 use todo::*;
+
+
+const MESSAGE: &str = "Incorrect subcommand only accepect-\nadd\ndelete\ncomplete\nedit\nlist";
+
 fn main() {
     let args: Vec<String> = env::args().collect();
 
@@ -19,6 +23,6 @@ fn main() {
         "list" => {
             list_task();
         }
-        _ => {}
+        _ => {println!("{MESSAGE}")}
     }
 }
