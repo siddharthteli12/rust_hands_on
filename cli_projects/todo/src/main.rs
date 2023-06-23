@@ -11,7 +11,7 @@ fn main() {
             add_task(args[2..].join(" "));
         }
         "delete" => {
-            delete_task();
+            delete_task(args[2].parse::<usize>().unwrap());
         }
         "complete" => {
             complete_task();
