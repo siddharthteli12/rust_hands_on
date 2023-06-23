@@ -3,6 +3,8 @@ use std::{
     io::{Read, Write},
 };
 
+use colored::Colorize;
+
 pub fn add_task(task: String) {
     let mut file = OpenOptions::new()
         .write(true)
@@ -41,7 +43,28 @@ pub fn delete_task(index: usize) {
     }
 }
 
-pub fn complete_task() {}
+pub fn complete_task() {
+    let mut file = OpenOptions::new()
+        .read(true)
+        .append(true)
+        .open("todo.txt")
+        .unwrap();
+
+    let mut result_tasks = String::new();
+    let _ = file.read_to_string(&mut result_tasks);
+
+    for (index, task) in result_tasks.lines().enumerate() {
+        if task.chars().nth(0).unwrap() == '*' {
+            println!(
+                "{:} {:}",
+                index.to_string().bold(),
+                task[1..].strikethrough()
+            );
+        } else {
+            println!("{:} {:}", index.to_string().bold(), task.green());
+        }
+    }
+}
 
 pub fn edit_task() {}
 
