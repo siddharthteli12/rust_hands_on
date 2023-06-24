@@ -43,7 +43,11 @@ pub fn delete_task(index: usize) {
     }
 }
 
-pub fn complete_task() {
+pub fn complete_task() {}
+
+pub fn edit_task() {}
+
+pub fn list_task() {
     let mut file = OpenOptions::new()
         .read(true)
         .append(true)
@@ -65,7 +69,3 @@ pub fn complete_task() {
         }
     }
 }
-
-pub fn edit_task() {}
-
-pub fn list_task() {}
