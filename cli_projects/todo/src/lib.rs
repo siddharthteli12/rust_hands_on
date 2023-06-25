@@ -43,7 +43,30 @@ pub fn delete_task(index: usize) {
     }
 }
 
-pub fn complete_task() {}
+pub fn complete_task(index: usize) {
+    let mut file = OpenOptions::new()
+        .write(true)
+        .read(true)
+        .append(true)
+        .create(true)
+        .open("todo.txt")
+        .unwrap();
+
+    let mut result_tasks = String::new();
+    let _ = file.read_to_string(&mut result_tasks);
+    let mut tasks: Vec<&str> = result_tasks.lines().collect();
+
+    if tasks[index].starts_with("*") {
+        return;
+    } else {
+        let completed_task = format!("*{:}", tasks[index]);
+        tasks[index] = &completed_task;
+        let _ = file.set_len(0);
+        for task in tasks {
+            let _ = file.write(format!("{:}\n", task).as_bytes());
+        }
+    }
+}
 
 pub fn edit_task() {}
 

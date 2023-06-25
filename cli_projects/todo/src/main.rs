@@ -14,7 +14,7 @@ fn main() {
             delete_task(args[2].parse::<usize>().unwrap());
         }
         "complete" => {
-            complete_task();
+            complete_task(args[2].parse::<usize>().unwrap());
         }
         "edit" => {
             edit_task();
