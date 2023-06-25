@@ -68,7 +68,25 @@ pub fn complete_task(index: usize) {
     }
 }
 
-pub fn edit_task() {}
+pub fn edit_task(index: usize, new_task: String) {
+    let mut file = OpenOptions::new()
+        .write(true)
+        .read(true)
+        .append(true)
+        .create(true)
+        .open("todo.txt")
+        .unwrap();
+    let mut tasks = String::new();
+    let _ = file.read_to_string(&mut tasks);
+
+    let mut tasks: Vec<&str> = tasks.lines().collect();
+
+    tasks[index] = &new_task;
+    let _ = file.set_len(0);
+    for task in tasks {
+        let _ = file.write(format!("{:}\n", task).as_bytes());
+    }
+}
 
 pub fn list_task() {
     let mut file = OpenOptions::new()

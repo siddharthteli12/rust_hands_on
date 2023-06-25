@@ -17,7 +17,7 @@ fn main() {
             complete_task(args[2].parse::<usize>().unwrap());
         }
         "edit" => {
-            edit_task();
+            edit_task(args[2].parse::<usize>().unwrap(), args[3..].join(" "));
         }
         "list" => {
             list_task();
