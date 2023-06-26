@@ -18,7 +18,6 @@ pub fn add_task(task: String) {
 
 pub fn delete_task(index: usize) {
     let mut file = OpenOptions::new()
-        .write(true)
         .read(true)
         .append(true)
         .open("todo.txt")
@@ -27,19 +26,18 @@ pub fn delete_task(index: usize) {
     let mut tasks = String::new();
     file.read_to_string(&mut tasks)
         .expect("Issue reading to string");
-    let result_task: Vec<&str> = tasks
+
+    let result_task: String = tasks
         .lines()
         .enumerate()
         .into_iter()
         .filter(|&(i, _)| i != index)
-        .map(|(_, e)| e)
+        .map(|(_, e)| format!("{:}\n", e))
         .collect();
 
-    file.set_len(0).expect("Issue setting file len to 0");
-    for task in result_task {
-        file.write(format!("{:}\n", task).as_bytes())
-            .expect("Issue writing to file");
-    }
+    file.set_len(0).expect("Issue in settin len to zero");
+    file.write(result_task.as_bytes())
+        .expect("Issue writing to file");
 }
 
 pub fn complete_task(index: usize) {
@@ -47,7 +45,6 @@ pub fn complete_task(index: usize) {
         .write(true)
         .read(true)
         .append(true)
-        .create(true)
         .open("todo.txt")
         .unwrap();
 
