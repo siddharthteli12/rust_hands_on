@@ -50,4 +50,25 @@ impl TodoList {
         }
         Self { todos: todo_list }
     }
+
+    fn add_todo(&mut self, todo: String) {
+        self.todos.push(Todo::new(todo, false))
+    }
+
+    fn delete_todo(&mut self, index: usize) {
+        self.todos.remove(index);
+    }
+
+    fn edit_todo(&mut self, new_todo: String, index: usize) {
+        self.todos[index] = Todo::new(new_todo, false);
+    }
+
+    fn mark_todo_as_complete(&mut self, index: usize) {
+        let is_completed = &mut self.todos[index].is_completed;
+        if !*is_completed {
+            *is_completed = true;
+        } else {
+            println!("Todo already marked as completed");
+        }
+    }
 }
