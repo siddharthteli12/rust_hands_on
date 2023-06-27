@@ -1,6 +1,6 @@
 use std::{
     fs::OpenOptions,
-    io::{Read, Write},
+    io::{Read, Seek, Write},
 };
 
 use colored::Colorize;
@@ -19,7 +19,7 @@ pub fn add_task(task: String) {
 pub fn delete_task(index: usize) {
     let mut file = OpenOptions::new()
         .read(true)
-        .append(true)
+        .write(true)
         .open("todo.txt")
         .unwrap();
 
@@ -36,6 +36,7 @@ pub fn delete_task(index: usize) {
         .collect();
 
     file.set_len(0).expect("Issue in settin len to zero");
+    file.rewind().expect("Issue rewinding");
     file.write(result_task.as_bytes())
         .expect("Issue writing to file");
 }
