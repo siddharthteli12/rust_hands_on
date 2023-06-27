@@ -9,6 +9,15 @@ struct Todo {
     is_completed: bool,
 }
 
+impl Todo {
+    fn new(description: String, is_completed: bool) -> Self {
+        Self {
+            description,
+            is_completed,
+        }
+    }
+}
+
 impl TodoList {
     fn new(path: &str) -> Self {
         match File::open(path) {
@@ -31,6 +40,14 @@ impl TodoList {
     }
 
     fn build_todos(todos: String) -> Self {
-        Self { todos: vec![] }
+        let mut todo_list: Vec<Todo> = vec![];
+        for todo in todos.lines() {
+            if todo.chars().nth(0).unwrap() == '*' {
+                todo_list.push(Todo::new(String::from(todo), true));
+            } else {
+                todo_list.push(Todo::new(String::from(todo), false));
+            }
+        }
+        Self { todos: todo_list }
     }
 }
