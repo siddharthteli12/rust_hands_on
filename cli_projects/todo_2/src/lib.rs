@@ -1,10 +1,20 @@
-use std::{fs::File, io::Read, process::exit};
+use std::{
+    fs::{File, OpenOptions},
+    io::{Read, Write},
+    process::exit,
+};
 
-struct TodoList {
+use colored::Colorize;
+const TODO_PATH: &str = "todo.txt";
+
+#[derive(Clone)]
+pub struct TodoList {
     todos: Vec<Todo>,
 }
 
-struct Todo {
+#[derive(Clone)]
+
+pub struct Todo {
     description: String,
     is_completed: bool,
 }
@@ -19,7 +29,7 @@ impl Todo {
 }
 
 impl TodoList {
-    fn new(path: &str) -> Self {
+    pub fn new(path: &str) -> Self {
         match File::open(path) {
             Ok(mut file) => {
                 let mut todos: String = String::new();
@@ -51,24 +61,53 @@ impl TodoList {
         Self { todos: todo_list }
     }
 
-    fn add_todo(&mut self, todo: String) {
+    pub fn add_todo(&mut self, todo: String) {
         self.todos.push(Todo::new(todo, false))
     }
 
-    fn delete_todo(&mut self, index: usize) {
+    pub fn delete_todo(&mut self, index: usize) {
         self.todos.remove(index);
     }
 
-    fn edit_todo(&mut self, new_todo: String, index: usize) {
+    pub fn edit_todo(&mut self, index: usize, new_todo: String) {
         self.todos[index] = Todo::new(new_todo, false);
     }
 
-    fn mark_todo_as_complete(&mut self, index: usize) {
+    pub fn list_todo(&self) {
+        let mut counter = 0;
+        for todo in self.todos.clone() {
+            if todo.is_completed {
+                println!(
+                    "{:}.) {:}",
+                    counter,
+                    todo.description[1..].strikethrough().bold().green()
+                );
+            } else {
+                println!("{:}.) {:}", counter, todo.description.bold().yellow());
+            }
+            counter = counter + 1;
+        }
+    }
+
+    pub fn mark_todo_as_complete(&mut self, index: usize) {
         let is_completed = &mut self.todos[index].is_completed;
         if !*is_completed {
             *is_completed = true;
         } else {
             println!("Todo already marked as completed");
         }
+    }
+
+    pub fn write_todos_to_file(&mut self) {
+        let mut file = OpenOptions::new()
+            .write(true)
+            .truncate(true)
+            .open(TODO_PATH)
+            .unwrap();
+        let mut todos = String::new();
+        for todo in self.todos.clone() {
+            todos.push_str((todo.description + "\n").as_str());
+        }
+        file.write(todos.as_bytes()).expect("Issue writing to file");
     }
 }
