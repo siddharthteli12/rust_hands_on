@@ -11,6 +11,7 @@ members = [
     "cli_projects/recho",
     "cli_projects/rls",
     "cli_projects/todo",
+    "cli_projects/todo_2",
     "macros",
     "random1",
     "custom_vec",
