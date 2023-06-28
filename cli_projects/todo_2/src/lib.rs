@@ -59,7 +59,7 @@ impl TodoList {
         let mut todo_list: Vec<Todo> = vec![];
         for todo in todos.lines() {
             if todo.chars().nth(0).unwrap() == '*' {
-                todo_list.push(Todo::new(String::from(todo), true));
+                todo_list.push(Todo::new(String::from(todo)[1..].to_string(), true));
             } else {
                 todo_list.push(Todo::new(String::from(todo), false));
             }
@@ -81,12 +81,12 @@ impl TodoList {
 
     pub fn list_todo(&self) {
         let mut counter = 0;
-        for todo in self.todos.clone() {
+        for todo in &self.todos {
             if todo.is_completed {
                 println!(
                     "{:}.) {:}",
                     counter,
-                    todo.description[1..].strikethrough().bold().green()
+                    todo.description.strikethrough().bold().green()
                 );
             } else {
                 println!("{:}.) {:}", counter, todo.description.bold().yellow());
@@ -111,8 +111,13 @@ impl TodoList {
             .open(&self.todo_path)
             .unwrap();
         let mut todos = String::new();
-        for todo in self.todos.clone() {
-            todos.push_str((todo.description + "\n").as_str());
+        for mut todo in self.todos.clone() {
+            if todo.is_completed {
+                todo.description.insert(0, '*');
+                todos.push_str((todo.description + "\n").as_str());
+            } else {
+                todos.push_str((todo.description + "\n").as_str());
+            }
         }
         file.write(todos.as_bytes()).expect("Issue writing to file");
     }
