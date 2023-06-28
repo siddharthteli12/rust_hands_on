@@ -9,7 +9,7 @@ fn main() {
     let args: Vec<String> = env::args().collect();
     match args.get(1) {
         Some(arg) => {
-            let mut todo_list = TodoList::new(TODO_PATH);
+            let mut todo_list = TodoList::new(String::from(TODO_PATH));
             match arg.to_ascii_lowercase().as_str() {
                 "add" => {
                     todo_list.add_todo(args[2..].join(" "));

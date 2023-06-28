@@ -5,10 +5,10 @@ use std::{
 };
 
 use colored::Colorize;
-const TODO_PATH: &str = "todo.txt";
 
 #[derive(Clone)]
 pub struct TodoList {
+    todo_path: String,
     todos: Vec<Todo>,
 }
 
@@ -29,17 +29,23 @@ impl Todo {
 }
 
 impl TodoList {
-    pub fn new(path: &str) -> Self {
-        match File::open(path) {
+    pub fn new(todo_path: String) -> Self {
+        match File::open(&todo_path) {
             Ok(mut file) => {
                 let mut todos: String = String::new();
                 file.read_to_string(&mut todos).expect("Issue reading file");
-                Self::build_todos(todos)
+                Self {
+                    todo_path,
+                    todos: Self::build_todos(todos),
+                }
             }
             Err(e) => match e.kind() == std::io::ErrorKind::NotFound {
                 true => {
-                    File::create(path).expect("Issue creating file");
-                    Self { todos: vec![] }
+                    File::create(&todo_path).expect("Issue creating file");
+                    Self {
+                        todo_path,
+                        todos: vec![],
+                    }
                 }
                 false => {
                     println!("Error opening file due to {:?}", e);
@@ -49,7 +55,7 @@ impl TodoList {
         }
     }
 
-    fn build_todos(todos: String) -> Self {
+    fn build_todos(todos: String) -> Vec<Todo> {
         let mut todo_list: Vec<Todo> = vec![];
         for todo in todos.lines() {
             if todo.chars().nth(0).unwrap() == '*' {
@@ -58,7 +64,7 @@ impl TodoList {
                 todo_list.push(Todo::new(String::from(todo), false));
             }
         }
-        Self { todos: todo_list }
+        todo_list
     }
 
     pub fn add_todo(&mut self, todo: String) {
@@ -102,7 +108,7 @@ impl TodoList {
         let mut file = OpenOptions::new()
             .write(true)
             .truncate(true)
-            .open(TODO_PATH)
+            .open(&self.todo_path)
             .unwrap();
         let mut todos = String::new();
         for todo in self.todos.clone() {
