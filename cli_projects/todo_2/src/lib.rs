@@ -29,6 +29,9 @@ impl Todo {
 }
 
 impl TodoList {
+    /// Creates todo list instance from file.
+    /// Parameters:
+    /// - `todo_path`: Todo file path to open/create.
     pub fn new(todo_path: String) -> Self {
         match File::open(&todo_path) {
             Ok(mut file) => {
@@ -55,6 +58,9 @@ impl TodoList {
         }
     }
 
+    /// Utility method to return list of todo.
+    /// Parameters:
+    /// - `todos`: Data read from todo file.
     fn build_todos(todos: String) -> Vec<Todo> {
         let mut todo_list: Vec<Todo> = vec![];
         for todo in todos.lines() {
@@ -67,18 +73,29 @@ impl TodoList {
         todo_list
     }
 
+    /// Add new todo to instance.
+    /// Parameters:
+    /// - `todo`: New todo description.
     pub fn add_todo(&mut self, todo: String) {
         self.todos.push(Todo::new(todo, false))
     }
 
+    /// Delete todo by index.
+    /// Parameters:
+    /// - `index`: Index of todo to delete.
     pub fn delete_todo(&mut self, index: usize) {
         self.todos.remove(index);
     }
 
+    /// Edit todo with new_todo by index in instance.
+    /// Parameters:
+    /// - `index`: Index of todo to edit.
+    /// - `new_todo`: New todo to add.
     pub fn edit_todo(&mut self, index: usize, new_todo: String) {
         self.todos[index] = Todo::new(new_todo, false);
     }
 
+    /// List complete & uncompleted todo from instance.
     pub fn list_todo(&self) {
         let mut counter = 0;
         for todo in &self.todos {
@@ -95,6 +112,9 @@ impl TodoList {
         }
     }
 
+    /// Mark todo as complete by index.
+    /// Parameters:
+    /// - `index`: Index of todo to mark as complete.
     pub fn mark_todo_as_complete(&mut self, index: usize) {
         let is_completed = &mut self.todos[index].is_completed;
         if !*is_completed {
@@ -104,6 +124,7 @@ impl TodoList {
         }
     }
 
+    /// Write todo instance to file.
     pub fn write_todos_to_file(&mut self) {
         let mut file = OpenOptions::new()
             .write(true)
