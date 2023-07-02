@@ -15,4 +15,5 @@ members = [
     "macros",
     "random1",
     "custom_vec",
+    "serde",
 ]
