@@ -1,12 +1,16 @@
 use std::env;
 use todo_2::*;
 
-const MESSAGE: &str =
+const INCORRECT_SUBCOMMAND: &str =
     "Incorrect subcommand, only accepted subcommand is-\nadd\ndelete\ncomplete\nedit\nlist";
+
+const MISSING_SUBCOMMAND: &str = "Cli arguments missing";
+
 const TODO_PATH: &str = "todo.txt";
 
 fn main() {
     let args: Vec<String> = env::args().collect();
+    // Match subcommand.
     match args.get(1) {
         Some(arg) => {
             let mut todo_list = TodoList::new(String::from(TODO_PATH));
@@ -27,13 +31,13 @@ fn main() {
                     todo_list.list_todo();
                 }
                 _ => {
-                    println!("{MESSAGE}")
+                    println!("{INCORRECT_SUBCOMMAND}")
                 }
             };
             todo_list.write_todos_to_file();
         }
         None => {
-            println!("Missing cli arguments")
+            println!("{MISSING_SUBCOMMAND}");
         }
     }
 }
