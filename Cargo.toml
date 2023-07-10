@@ -16,4 +16,5 @@ members = [
     "random1",
     "custom_vec",
     "serde",
+    "lazy_static",
 ]
