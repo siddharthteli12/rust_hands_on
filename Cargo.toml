@@ -17,4 +17,6 @@ members = [
     "custom_vec",
     "serde",
     "lazy_static",
+    "lifetime",
+    "db_insert", 
 ]
