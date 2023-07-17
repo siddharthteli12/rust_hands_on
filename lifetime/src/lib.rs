@@ -4,14 +4,15 @@
 /// Store remaining & delimiter slice.
 #[derive(Debug)]
 pub struct StrSpilt<'a> {
-    remainder: &'a str,
+    remainder: Option<&'a str>,
     delimiter: &'a str,
 }
 
 impl<'a> StrSpilt<'a> {
+    #[allow(dead_code)]
     fn new(haystack: &'a str, delimiter: &'a str) -> Self {
         Self {
-            remainder: haystack,
+            remainder: Some(haystack),
             delimiter,
         }
     }
@@ -21,24 +22,32 @@ impl<'a> Iterator for StrSpilt<'a> {
     type Item = &'a str;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if let Some(next_delim) = self.remainder.find(self.delimiter) {
-            let result_str = &self.remainder[..next_delim];
-            self.remainder = &self.remainder[(next_delim + self.delimiter.len())..];
-            Some(result_str)
-        } else if self.remainder.is_empty() {
-            None
+        if let Some(ref mut remainder) = self.remainder {
+            if let Some(next_delimeter) = remainder.find(self.delimiter) {
+                let result = &remainder[..next_delimeter];
+                *remainder = &remainder[next_delimeter + self.delimiter.len()..];
+                Some(result)
+            } else {
+                self.remainder.take()
+            }
         } else {
-            let result_str = self.remainder;
-            self.remainder = "";
-            Some(result_str)
+            None
         }
     }
 }
 
 #[test]
-fn it_works() {
+fn delimiter_spaced_string() {
     let haystack = "a b c d e";
-    let letters = StrSpilt::new(haystack, " ");
+    let letters: Vec<&str> = StrSpilt::new(haystack, " ").collect();
     // Eq converts letters to iterator type.
-    assert!(letters.eq(vec!["a", "b", "c", "d", "e"]));
+    assert_eq!(letters, vec!["a", "b", "c", "d", "e"]);
+}
+
+#[test]
+fn tail_empty_string() {
+    let haystack = "a b c d e ";
+    let letters: Vec<&str> = StrSpilt::new(haystack, " ").collect();
+    // Eq converts letters to iterator type.
+    assert_eq!(letters, vec!["a", "b", "c", "d", "e", ""]);
 }
