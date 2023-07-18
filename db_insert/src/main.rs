@@ -1,6 +1,5 @@
 use dotenv::dotenv;
 
-
 #[tokio::main]
 pub async fn main() {
     dotenv().ok();
@@ -16,7 +15,7 @@ pub async fn main() {
     sqlx::migrate!("./migrations").run(&pool).await.unwrap();
 
     sqlx::query!(
-        "INSERT INTO students(name ,age) 
+        "INSERT INTO students(name ,age)
         SELECT * FROM UNNEST($1::text[], $2::int8[])",
         &names[..],
         &ages[..]: Vec<Option<i64>>,

@@ -3,14 +3,14 @@
 
 /// Store remaining & delimiter slice.
 #[derive(Debug)]
-pub struct StrSpilt<'a> {
+pub struct StrSpilt<'a, 'b> {
     remainder: Option<&'a str>,
-    delimiter: &'a str,
+    delimiter: &'b str,
 }
 
-impl<'a> StrSpilt<'a> {
+impl<'a, 'b> StrSpilt<'a, 'b> {
     #[allow(dead_code)]
-    fn new(haystack: &'a str, delimiter: &'a str) -> Self {
+    fn new(haystack: &'a str, delimiter: &'b str) -> Self {
         Self {
             remainder: Some(haystack),
             delimiter,
@@ -18,7 +18,7 @@ impl<'a> StrSpilt<'a> {
     }
 }
 
-impl<'a> Iterator for StrSpilt<'a> {
+impl<'a, 'b> Iterator for StrSpilt<'a, 'b> {
     type Item = &'a str;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -36,6 +36,12 @@ impl<'a> Iterator for StrSpilt<'a> {
     }
 }
 
+#[allow(dead_code)]
+fn until_char(target: &str, delimeter: char) -> Option<&str> {
+    let delimeter_str = &delimeter.to_string();
+    StrSpilt::new(target, delimeter_str).next()
+}
+
 #[test]
 fn delimiter_spaced_string() {
     let haystack = "a b c d e";
@@ -50,4 +56,11 @@ fn tail_empty_string() {
     let letters: Vec<&str> = StrSpilt::new(haystack, " ").collect();
     // Eq converts letters to iterator type.
     assert_eq!(letters, vec!["a", "b", "c", "d", "e", ""]);
+}
+
+#[test]
+fn until_first_char() {
+    let target = "Hey how are you";
+    let delimeter = 'y';
+    assert_eq!(until_char(target, delimeter), Some("He"));
 }
