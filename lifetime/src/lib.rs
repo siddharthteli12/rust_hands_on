@@ -3,14 +3,14 @@
 
 /// Store remaining & delimiter slice.
 #[derive(Debug)]
-pub struct StrSpilt<'a, 'b> {
+pub struct StrSpilt<'a, D> {
     remainder: Option<&'a str>,
-    delimiter: &'b str,
+    delimiter: D,
 }
 
-impl<'a, 'b> StrSpilt<'a, 'b> {
+impl<'a, D> StrSpilt<'a, D> {
     #[allow(dead_code)]
-    fn new(haystack: &'a str, delimiter: &'b str) -> Self {
+    fn new(haystack: &'a str, delimiter: D) -> Self {
         Self {
             remainder: Some(haystack),
             delimiter,
@@ -18,14 +18,21 @@ impl<'a, 'b> StrSpilt<'a, 'b> {
     }
 }
 
-impl<'a, 'b> Iterator for StrSpilt<'a, 'b> {
+trait Delimeter {
+    fn find_next(&self, target: &str) -> Option<(usize, usize)>;
+}
+
+impl<'a, D> Iterator for StrSpilt<'a, D>
+where
+    D: Delimeter,
+{
     type Item = &'a str;
 
     fn next(&mut self) -> Option<Self::Item> {
         if let Some(ref mut remainder) = self.remainder {
-            if let Some(next_delimeter) = remainder.find(self.delimiter) {
-                let result = &remainder[..next_delimeter];
-                *remainder = &remainder[next_delimeter + self.delimiter.len()..];
+            if let Some((start, end)) = self.delimiter.find_next(remainder) {
+                let result = &remainder[..start];
+                *remainder = &remainder[end..];
                 Some(result)
             } else {
                 self.remainder.take()
@@ -36,10 +43,17 @@ impl<'a, 'b> Iterator for StrSpilt<'a, 'b> {
     }
 }
 
+impl Delimeter for &str {
+    fn find_next(&self, target: &str) -> Option<(usize, usize)> {
+        target
+            .find(self)
+            .map(|start_index| (start_index, start_index + self.len()))
+    }
+}
+
 #[allow(dead_code)]
-fn until_char(target: &str, delimeter: char) -> Option<&str> {
-    let delimeter_str = &delimeter.to_string();
-    StrSpilt::new(target, delimeter_str).next()
+fn until_char<T: Delimeter>(target: &str, delimeter: T) -> Option<&str> {
+    StrSpilt::new(target, delimeter).next()
 }
 
 #[test]
@@ -61,6 +75,6 @@ fn tail_empty_string() {
 #[test]
 fn until_first_char() {
     let target = "Hey how are you";
-    let delimeter = 'y';
+    let delimeter = "y";
     assert_eq!(until_char(target, delimeter), Some("He"));
 }
