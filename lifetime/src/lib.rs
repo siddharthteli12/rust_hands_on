@@ -51,6 +51,14 @@ impl Delimeter for &str {
     }
 }
 
+impl Delimeter for char {
+    fn find_next(&self, target: &str) -> Option<(usize, usize)> {
+        target
+            .find(*self)
+            .map(|start_index| (start_index, start_index + 1))
+    }
+}
+
 #[allow(dead_code)]
 fn until_char<T: Delimeter>(target: &str, delimeter: T) -> Option<&str> {
     StrSpilt::new(target, delimeter).next()
@@ -75,6 +83,6 @@ fn tail_empty_string() {
 #[test]
 fn until_first_char() {
     let target = "Hey how are you";
-    let delimeter = "y";
+    let delimeter = 'y';
     assert_eq!(until_char(target, delimeter), Some("He"));
 }
