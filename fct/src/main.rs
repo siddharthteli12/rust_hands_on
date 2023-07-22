@@ -15,7 +15,7 @@ fn main() {
 }
 
 // x is of function pointer type.
-// Function pointer impl Fn, which impl FnMut & FnOnce.
+// Function pointer impl Fn, which impl FnMut & it impls FnOnce.
 // Hence, function pointer impl all three trait.
 fn baz<T>(x: fn(T) -> T) {
     // Here, x is a pointer because its size is not zero but usize.
