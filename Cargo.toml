@@ -19,4 +19,6 @@ members = [
     "lazy_static",
     "lifetime",
     "db_insert", 
+    "iterators",
+    "gen_traits",
 ]
