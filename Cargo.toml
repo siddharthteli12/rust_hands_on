@@ -2,7 +2,7 @@
 
 members = [
     "cli_projects/cli_app",
-    "progress_bar",
+    "misc/progress_bar",
     "rust_core/traits/drop_trait",
     "rust_core/traits/custom_iterator",
     "networking/tcp_server_client",
@@ -14,8 +14,8 @@ members = [
     "cli_projects/todo_2",
     "rust_core/macros",
     "rust_core/pointer",
-    "custom_vec",
-    "serde",
+    "misc/custom_vec",
+    "misc/serde",
     "rust_core/lazy_static",
     "rust_core/lifetime",
     "db/db_insert", 
