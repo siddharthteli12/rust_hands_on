@@ -64,8 +64,8 @@ impl TodoList {
     fn build_todos(todos: String) -> Vec<Todo> {
         let mut todo_list: Vec<Todo> = vec![];
         for todo in todos.lines() {
-            if todo.chars().nth(0).unwrap() == '*' {
-                todo_list.push(Todo::new(String::from(todo)[1..].to_string(), true));
+            if let Some(todo_str) = todo.strip_prefix('*') {
+                todo_list.push(Todo::new(todo_str.to_string(), true));
             } else {
                 todo_list.push(Todo::new(String::from(todo), false));
             }
@@ -97,18 +97,16 @@ impl TodoList {
 
     /// List complete & uncompleted todo from instance.
     pub fn list_todo(&self) {
-        let mut counter = 0;
-        for todo in &self.todos {
+        for (index, todo) in self.todos.iter().enumerate() {
             if todo.is_completed {
                 println!(
                     "{:}.) {:}",
-                    counter,
+                    index,
                     todo.description.strikethrough().bold().green()
                 );
             } else {
-                println!("{:}.) {:}", counter, todo.description.bold().yellow());
+                println!("{:}.) {:}", index, todo.description.bold().yellow());
             }
-            counter = counter + 1;
         }
     }
 
@@ -116,9 +114,9 @@ impl TodoList {
     /// Parameters:
     /// - `index`: Index of todo to mark as complete.
     pub fn mark_todo_as_complete(&mut self, index: usize) {
-        let is_completed = &mut self.todos[index].is_completed;
-        if !*is_completed {
-            *is_completed = true;
+        let mut todo = &mut self.todos[index];
+        if todo.is_completed {
+            todo.is_completed = true;
         } else {
             println!("Todo already marked as completed");
         }
@@ -132,14 +130,14 @@ impl TodoList {
             .open(&self.todo_path)
             .unwrap();
         let mut todos = String::new();
-        for mut todo in self.todos.clone() {
+        for todo in self.todos.iter() {
             if todo.is_completed {
-                todo.description.insert(0, '*');
-                todos.push_str((todo.description + "\n").as_str());
+                todos.push_str(&format!("*{}\n", todo.description));
             } else {
-                todos.push_str((todo.description + "\n").as_str());
+                todos.push_str(&format!("{}\n", todo.description));
             }
         }
-        file.write(todos.as_bytes()).expect("Issue writing to file");
+        file.write_all(todos.as_bytes())
+            .expect("Issue writing to file");
     }
 }
