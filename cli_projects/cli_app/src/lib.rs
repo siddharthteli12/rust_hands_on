@@ -4,7 +4,7 @@ pub fn match_pattern(
     mut output: impl std::io::Write,
 ) -> Result<(), std::io::Error> {
     for (counter, line) in content.lines().enumerate() {
-        if line.contains(&pattern) {
+        if line.contains(pattern) {
             writeln!(&mut output, "{:},{:}", counter, line)?
         }
     }
