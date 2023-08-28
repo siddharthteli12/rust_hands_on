@@ -22,4 +22,5 @@ members = [
     "rust_core/traits/custom_iterator",
     "rust_core/traits/gen_traits",
     "ds/arrays_and_hashing",
+    "algo/sorting",
 ]
