@@ -23,4 +23,5 @@ members = [
     "rust_core/traits/gen_traits",
     "ds/arrays_and_hashing",
     "algo/sorting",
+    "networking/tcp_protocol_impl",
 ]
