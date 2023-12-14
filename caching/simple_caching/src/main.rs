@@ -1,4 +1,4 @@
-use std::{cell::Cell, collections::HashMap, io, ops::Deref};
+use std::{cell::Cell, collections::HashMap, io};
 
 // DbPool connection
 struct DbPool;
@@ -15,23 +15,35 @@ struct AppState {
 }
 
 // Response
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 struct Response {
     value: u128,
 }
 
 impl AppState {
     fn get_response(&self, id: u32) -> io::Result<Response> {
-        // Return from cache or else from db.
-        if let Some(value) = self.cache.take().get(&id) {
-            return Ok(*value);
+        let mut cache = self.cache.take();
+        let result;
+
+        if let Some(&value) = cache.get(&id) {
+            result = value;
+        } else {
+            result = self.db.process_request_id(id).unwrap();
+            cache.insert(id, result);
         }
-        let value = self.db.process_request_id(id);
-        let mut map = self.cache.take();
-        map.insert(id, *value.as_ref().unwrap());
-        self.cache.set(map);
-        value
+        self.cache.set(cache);
+        Ok(result)
+    }
+    fn new() -> Self {
+        Self {
+            db: DbPool,
+            cache: Cell::new(HashMap::default()),
+        }
     }
 }
 
-fn main() {}
+fn main() {
+    let state = AppState::new();
+    state.get_response(10).unwrap();
+    state.get_response(11).unwrap();
+}
