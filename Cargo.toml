@@ -27,4 +27,7 @@ members = [
     "interview_test",
     "networking/web_server",
     "rust_core/inter_mut",
+    "caching/simple_caching",
+    "scylla_db",
+    "scylla_db2",
 ]
