@@ -29,5 +29,5 @@ members = [
     "rust_core/inter_mut",
     "caching/simple_caching",
     "scylla_db",
-    "scylla_db2",
+    "xml_response",
 ]

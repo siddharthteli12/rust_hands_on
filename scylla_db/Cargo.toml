@@ -1,14 +1,12 @@
 [package]
-name = "xml_response"
+name = "scylla_db"
 version = "0.1.0"
 edition = "2021"
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 actix-web = "4.5.1"
 lazy_static = { version = "1.4.0" }
 scylla = "0.11.0"
-serde = { version = "1.0.197", features = ["derive"] }
 tokio = "1.36.0"
-quick-xml = { version = "0.31.0", features = ["serialize"]}
- 
