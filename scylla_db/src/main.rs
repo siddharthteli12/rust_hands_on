@@ -7,17 +7,9 @@ use actix_state::WebState;
 use std::sync::Arc;
 mod db;
 use db::*;
-
-#[post("/store")]
-async fn echo(req_body: String, state: web::Data<Arc<WebState>>) -> impl Responder {
-    let value; {
-        let mut counter = state.counter.lock().unwrap();
-        *counter += 1;
-        value = *counter;
-    }
-    insert_to_db(&state.session, value).await;
-    HttpResponse::Ok().body(req_body)
-}
+mod routes;
+mod types;
+use routes::store::db_store;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -27,7 +19,7 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(move || {
         App::new()
             .app_data(web::Data::new(state.clone()))
-            .service(echo)
+            .service(db_store)
     })
     .bind(("127.0.0.1", 8080))?
     .run()

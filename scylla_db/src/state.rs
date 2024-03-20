@@ -16,7 +16,7 @@ impl State {
         Self {
             host: env::var("HOST").unwrap_or_else(|_| String::from("0.0.0.0")),
             port: env::var("URL").unwrap_or_else(|_| String::from("8080")),
-            db_host: env::var("DB_HOST").unwrap_or_else(|_| String::from("0.0.0.0")),
+            db_host: env::var("DB_HOST").unwrap_or_else(|_| String::from("172.17.0.2")),
             db_port: env::var("DB_PORT").unwrap_or_else(|_| String::from("9042")),
         }
     }
