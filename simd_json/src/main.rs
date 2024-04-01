@@ -1,26 +1,40 @@
 use packed_simd::*;
-const LANES: usize = 4;
+use std::fs::File;
+use std::io::{Read, Write};
+use std::time::Instant;
 
-fn main() {
-    let list = [
-        '{', ';', 'b', ';', ';', ',', ':', '/', '{', ';', 'b', ';', ';', ',', ':', '/',
-    ];
-    let to_replace = ';';
-    let replace_with = ':';
-    let input = list.iter().map(|value| *value as u8).collect();
-    let result = process_list(input, to_replace as u8, replace_with as u8);
-    let result_str: Vec<char> = result.iter().map(|value| *value as char).collect();
-    println!("{:?}", result_str);
+const LANES: usize = 16;
+const BUFFER_SIZE: usize = 512 * 16;
+
+fn main() -> std::io::Result<()> {
+    let input_file = File::open("input.json")?;
+    let output_file = File::create("output.json")?;
+    let now = Instant::now();
+    process_json(input_file, output_file);
+    println!("Time taken - {:?}", now.elapsed().as_secs());
+    Ok(())
 }
 
-fn process_list(list: Vec<u8>, to_replace: u8, replace_with: u8) -> Vec<u8> {
-    assert_eq!(list.len() % LANES, 0);
+fn process_json(mut input: File, mut output: File) {
+    let mut buffer = [0_u8; BUFFER_SIZE];
+    loop {
+        let read_bytes = input.read(&mut buffer).unwrap();
+        if !read_bytes % LANES == 0 {
+            break;
+        }
+        let result = process_json_chunks(&buffer[..read_bytes]);
+        output.write(&result).unwrap();
+    }
+}
+
+fn process_json_chunks(list: &[u8]) -> Vec<u8> {
     let mut result = vec![0; list.len()];
+
     for i in (0..list.len()).step_by(LANES) {
-        let a = u8x4::from_slice_aligned(&list[i..]);
-        let b = u8x4::splat(to_replace);
+        let a = u8x16::from_slice_unaligned(&list[i..]);
+        let b = u8x16::splat(';' as u8);
         let mask = a.eq(b);
-        let replaced = mask.select(u8x4::splat(replace_with), a);
+        let replaced = mask.select(u8x16::splat(':' as u8), a);
         replaced.write_to_slice_unaligned(&mut result[i..]);
     }
     result
