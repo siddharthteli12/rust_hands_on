@@ -3,7 +3,7 @@
 use packed_simd::*;
 
 const LANES: usize = 16;
-const LENGTH: usize = LANES * 50000;
+const LENGTH: usize = LANES * 60000;
 
 fn main() {
     let data1 = [43; LENGTH];
@@ -26,8 +26,7 @@ fn normal_addition(data1: &[i32], data2: &[i32]) {
 fn simd_addition(data1: &[i32], data2: &[i32]) {
     assert_eq!(data1.len(), data2.len(), "Array lengths must be equal");
     let mut result = vec![0; data1.len()];
-    let simd_width = i32x16::lanes();
-    for i in (0..data1.len()).step_by(simd_width) {
+    for i in (0..data1.len()).step_by(LANES) {
         let a_chunk = i32x16::from_slice_unaligned(&data1[i..]);
         let b_chunk = i32x16::from_slice_unaligned(&data2[i..]);
         let sum = a_chunk + b_chunk;
