@@ -22,13 +22,12 @@ fn process_json(input_path: &str, output_path: &str) -> std::io::Result<()> {
         if !read_bytes % LANES == 0 {
             break;
         }
-        let result = process_json_chunks(&buffer[..read_bytes]);
-        output_file.write(&result).unwrap();
+        process_json_chunks(&buffer[..read_bytes], &mut output_file);
     }
     Ok(())
 }
 
-fn process_json_chunks(list: &[u8]) -> Vec<u8> {
+fn process_json_chunks(list: &[u8], output_file: &mut File) {
     let mut result = vec![0; list.len()];
 
     for i in (0..list.len()).step_by(LANES) {
@@ -38,5 +37,5 @@ fn process_json_chunks(list: &[u8]) -> Vec<u8> {
         let replaced = mask.select(u8x16::splat(b':'), a);
         replaced.write_to_slice_unaligned(&mut result[i..]);
     }
-    result
+    output_file.write(&result).unwrap();
 }
