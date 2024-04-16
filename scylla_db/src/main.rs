@@ -15,10 +15,10 @@ use routes::store::db_store;
 async fn main() -> std::io::Result<()> {
     let state = WebState::web_build().await;
     init_db(&state.session).await;
-    let state = Arc::new(state);
+    let state = web::Data::new(state);
     HttpServer::new(move || {
         App::new()
-            .app_data(web::Data::new(state.clone()))
+            .app_data(state.clone())
             .service(db_store)
     })
     .bind(("127.0.0.1", 8080))?
