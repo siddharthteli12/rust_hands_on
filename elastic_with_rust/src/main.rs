@@ -4,6 +4,7 @@ use actix_web::{
 };
 use elasticsearch::{Elasticsearch, IndexParts};
 use serde_json::json;
+use elasticsearch::http::transport::Transport;
 
 async fn register(client: web::Data<Elasticsearch>) -> impl Responder {
     println!("User registration api called");
@@ -26,7 +27,9 @@ async fn register(client: web::Data<Elasticsearch>) -> impl Responder {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    let elastic_client = web::Data::new(Elasticsearch::default());
+    let elastic_url = format!("http://{}", "127.0.0.1:9200");
+    let transport = Transport::single_node(&elastic_url).unwrap();
+    let elastic_client = Elasticsearch::new(transport);
     HttpServer::new(move || {
         App::new()
             .app_data(elastic_client.clone())
